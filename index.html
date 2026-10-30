@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#171321">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>K-CRYPT 01</title>
+<style>
+:root{color-scheme:dark;--bg:#11101a;--panel:#1b1927;--line:#353044;--ink:#f5f0fa;--muted:#aaa2b8;--accent:#c6a2df;--accent2:#8f70ad}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#30233c 0,#171421 42%,#11101a 100%);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+main{max-width:760px;margin:auto;padding:28px 16px 50px}.hero{text-align:center;padding:22px 8px 24px}.mark{width:54px;height:54px;border:1px solid #806594;border-radius:18px;display:grid;place-items:center;margin:0 auto 14px;color:var(--accent);font-size:25px;box-shadow:0 0 32px #b58bd522}
+h1{font-size:30px;letter-spacing:2px;margin:0;color:#eadcf5}.sub{color:var(--muted);font-size:13px;margin-top:7px}.motto{color:#c8b5d5;font-family:serif;font-style:italic;margin-top:13px}
+.card{background:#1b1927ed;border:1px solid var(--line);border-radius:20px;padding:18px;margin:14px 0;box-shadow:0 14px 40px #0003}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#12111a;padding:5px;border-radius:13px;margin-bottom:17px}
+button{font:inherit;cursor:pointer;border:0}.tab{padding:11px;border-radius:10px;background:transparent;color:var(--muted);font-weight:650}.tab.active{background:#3a2e48;color:#f3e8fc}
+label{display:block;font-size:14px;font-weight:650;margin:14px 0 8px}
+textarea,input{width:100%;border:1px solid #40384d;border-radius:13px;background:#12111a;color:var(--ink);padding:13px;font:inherit;outline:none}
+textarea{min-height:135px;resize:vertical;line-height:1.8}input{height:48px}textarea:focus,input:focus{border-color:var(--accent2);box-shadow:0 0 0 3px #a77cc322}
+.hint{font-size:12px;color:var(--muted);line-height:1.7;margin-top:7px}
+.primary{width:100%;padding:14px;border-radius:13px;background:linear-gradient(120deg,#9c78b8,#72538e);color:white;font-weight:750;margin-top:18px}
+.secondary{padding:10px 14px;border-radius:11px;background:#30283b;color:#e8d9f3;border:1px solid #4b3c5b}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}.output{white-space:pre-wrap;overflow-wrap:anywhere;line-height:2;color:#e8d8f0;font-family:serif}
+.status{font-size:13px;margin-top:12px;min-height:22px;color:#d7c5e5}.warning{border-right:3px solid #a98ac2;padding:10px 12px;background:#282333;border-radius:8px;color:#c9bfd2;font-size:12px;line-height:1.8}
+footer{text-align:center;color:#777084;font-size:11px;padding:15px}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<main>
+<header class="hero">
+<div class="mark">✧</div>
+<h1>K-CRYPT 01</h1>
+<div class="sub">PRIVATE MESSAGING SYSTEM · الإصدار الأول</div>
+<div class="motto">«لكل حكاية معنى لا يعرفه سوانا»</div>
+</header>
+<section class="card">
+<div class="tabs">
+<button class="tab active" id="encTab" type="button">تشفير رسالة</button>
+<button class="tab" id="decTab" type="button">فك التشفير</button>
+</div>
+<div id="encPane">
+<label for="plain">الرسالة الأصلية</label>
+<textarea id="plain" placeholder="اكتب رسالتك هنا باللغة العربية..."></textarea>
+</div>
+<div id="decPane" class="hidden">
+<label for="cipher">النص المشفّر</label>
+<textarea id="cipher" placeholder="الصق هنا النص الذي وصلك من الطرف الآخر..."></textarea>
+</div>
+<label for="pass">المفتاح السري المشترك</label>
+<input id="pass" type="password" autocomplete="current-password" placeholder="أدخل عبارة المرور المتفق عليها">
+<div class="hint">يجب إدخال عبارة المرور نفسها لدى الطرفين. لا ترسلوها مع الرسالة المشفّرة.</div>
+<button class="primary" id="run" type="button">تشفير الرسالة</button>
+<div class="status" id="status" role="status"></div>
+</section>
+<section class="card hidden" id="resultCard">
+<label id="resultLabel">الناتج</label>
+<div class="output" id="result"></div>
+<div class="actions">
+<button class="secondary" id="copy" type="button">نسخ النص</button>
+<button class="secondary" id="use" type="button">استخدام الناتج</button>
+</div>
+</section>
+<section class="card">
+<div class="warning">
+<strong>مهم:</strong> هذا الإصدار يشفر الرسالة فعلياً باستخدام AES‑256‑GCM ومفتاح مشتق عبر PBKDF2. النص الأدبي الناتج هو تمويه بصري قابل للعكس، وليس جملة عربية طبيعية تماماً. لا توجد كلمة مرور افتراضية؛ اختارا عبارة طويلة وفريدة ولا تعيدا استخدام العبارة التجريبية التي ظهرت في المحادثة.
+</div>
+<div class="hint" style="margin-top:12px">تتم المعالجة داخل المتصفح. لا يرسل التطبيق رسائلك أو مفتاحك إلى خادم. احتفظا بنسخة من الرسالة المشفّرة؛ فقدان المفتاح يعني عدم القدرة على استرجاعها.</div>
+</section>
+<footer>K-CRYPT 01 · محلي على جهازك</footer>
+</main>
+<script>
+const first=["كان","عاد","مرّ","نام","ظلّ","جاء","غاب","سار","حان","ذاب","طار","مال","لاح","فاض","صمت","رفرف"];
+const second=["المساء","القمر","الندى","الطريق","الضوء","النسيم","البحر","الورد","الليل","الصباح","الحنين","الغياب","الوعد","الصدى","الحلم","اللقاء"];
+const encTab=document.getElementById('encTab'),decTab=document.getElementById('decTab');
+const encPane=document.getElementById('encPane'),decPane=document.getElementById('decPane');
+const run=document.getElementById('run'),statusEl=document.getElementById('status');
+let mode='enc', lastResult='';
+function setMode(m){mode=m;encPane.classList.toggle('hidden',m!=='enc');decPane.classList.toggle('hidden',m!=='dec');encTab.classList.toggle('active',m==='enc');decTab.classList.toggle('active',m==='dec');run.textContent=m==='enc'?'تشفير الرسالة':'فك التشفير';statusEl.textContent='';document.getElementById('resultCard').classList.add('hidden')}
+encTab.onclick=()=>setMode('enc');decTab.onclick=()=>setMode('dec');
+function toWords(bytes){let out=[];for(const b of bytes)out.push(first[b>>4]+' '+second[b&15]);return out.join('، ')}
+function fromWords(s){const pairs=s.trim().split(/\s*،\s*/);if(!pairs.length||!s.trim())throw Error('النص المشفّر فارغ.');let out=[];for(const p of pairs){const w=p.trim().split(/\s+/);if(w.length!==2)throw Error('صيغة النص غير صحيحة أو ناقصة.');let a=first.indexOf(w[0]),b=second.indexOf(w[1]);if(a<0||b<0)throw Error('تعذّر التعرّف على إحدى كلمات الشفرة. انسخ النص كاملاً دون تعديل.');out.push((a<<4)|b)}return new Uint8Array(out)}
+function concat(...arrs){let n=arrs.reduce((a,b)=>a+b.length,0),o=new Uint8Array(n),p=0;for(const a of arrs){o.set(a,p);p+=a.length}return o}
+async function derive(pass,salt){const material=await crypto.subtle.importKey('raw',new TextEncoder().encode(pass),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:310000,hash:'SHA-256'},material,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+function b64url(bytes){let s='';bytes.forEach(b=>s+=String.fromCharCode(b));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+async function encrypt(){const msg=document.getElementById('plain').value,pass=document.getElementById('pass').value;if(!msg.trim())throw Error('اكتب الرسالة أولاً.');if(pass.length<12)throw Error('استخدم عبارة مرور لا تقل عن 12 محرفاً، ويفضل أن تكون أطول وفريدة.');const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),key=await derive(pass,salt),plain=new TextEncoder().encode(msg),ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,plain));const packed=concat(new Uint8Array([75,67,49]),salt,iv,ct);return toWords(packed)}
+async function decrypt(){const s=document.getElementById('cipher').value,pass=document.getElementById('pass').value;if(!s.trim())throw Error('الصق النص المشفّر أولاً.');if(!pass)throw Error('أدخل عبارة المرور.');const packed=fromWords(s);if(packed.length<48||packed[0]!==75||packed[1]!==67||packed[2]!==49)throw Error('هذا النص ليس بتنسيق K-CRYPT 01 أو أنه غير مكتمل.');const salt=packed.slice(3,19),iv=packed.slice(19,31),ct=packed.slice(31),key=await derive(pass,salt);const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv},key,ct);return new TextDecoder().decode(plain)}
+run.onclick=async()=>{try{if(!window.crypto?.subtle)throw Error('التشفير الآمن غير متاح في هذا المتصفح. افتح التطبيق من اتصال HTTPS ومتصفح حديث.');run.disabled=true;run.textContent='جارٍ التنفيذ...';statusEl.textContent='';lastResult=mode==='enc'?await encrypt():await decrypt();document.getElementById('result').textContent=lastResult;document.getElementById('resultLabel').textContent=mode==='enc'?'النص الأدبي المشفّر':'الرسالة بعد فك التشفير';document.getElementById('resultCard').classList.remove('hidden');statusEl.textContent=mode==='enc'?'تم التشفير بنجاح.':'تم فك التشفير بنجاح.'}catch(e){statusEl.textContent=e.message||'حدث خطأ أثناء العملية.';document.getElementById('resultCard').classList.add('hidden')}finally{run.disabled=false;run.textContent=mode==='enc'?'تشفير الرسالة':'فك التشفير'}};
+document.getElementById('copy').onclick=async()=>{try{await navigator.clipboard.writeText(lastResult);statusEl.textContent='تم نسخ الناتج.'}catch{statusEl.textContent='تعذّر النسخ تلقائياً؛ حدّد النص وانسخه.'}};
+document.getElementById('use').onclick=()=>{if(mode==='enc'){document.getElementById('cipher').value=lastResult;setMode('dec')}else{document.getElementById('plain').value=lastResult;setMode('enc')}};
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+</script>
+</body></html>
